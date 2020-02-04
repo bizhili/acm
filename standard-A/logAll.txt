@@ -1,0 +1,88 @@
+11/21/13.43 log in
+.Tried serial communication,but failed
+11/22/15.04 log in
+.fixed serial communication receive method
+.still problem
+11/22/18.16 log in
+.math modeling for yaw angle control
+.pitch angle motor is not roll very well
+.problem : if I give force,yawangle would be normal
+11/23/21.37log in
+.NOT wifi serial (sersolve the problem that yaw is affected by force and Uncontrolled at a specific angle)
+.Baud rate using 115200(An odd check bit)  115200/11/1024=10.23KB/sï¼?600/10/1024=0.93ï¼?
+.problem: transmission accuracy reduction
+.problem:camera to gun barrel
+11/24/11.53 log in
+.receive data in 12 bits,expand band to 12 bits with 4096.keep all accurancy
+//
+if(get1.res6>=64)
+  {
+    head=get1.res6-64;
+    mes1.received.flag=2;
+  }
+  else if(get1.res6<64&&mes1.received.flag==2)
+  {
+    tail=get1.res6;
+    whole=head*64+taill;  
+  }
+//
+11/24 log in
+.on tx2 ,finished axis mapping
+.more thing to do with pid control
+.puzzle:the focal length of len 
+11/27 log in
+.fixed shoot on computer and rc
+the fric motor will not stop if you switch to stop
+instead it will roll slowly
+first used mpu, good but bot perfect case some reasons;
+11/28 log in
+.finished camera follow the car
+used pid value://pidYawCam[]={45,0.02,400};//
+need to do more: on TX2 fix the axis
+11/29 log in
+.programed small top,not put into reality
+.example like this:
+//
+if(getGimbalControl->mode==not_follow_chassis_mode)//not follow chassis mode
+    {
+      int ecdDelta=0;
+      float arcDelta;
+      u16 standardSpeed=chassis_move_rc_to_vector->vx_max_speed*1/2+chassis_move_rc_to_vector->vx_max_speed*1/2*(chassis_move_rc_to_vector->chassis_RC->key.v&ENHANCE);
+      if(getGimbalControl->gimbal_yaw_motor->ecd-Zero_Yaw>0)
+        ecdDelta=getGimbalControl->gimbal_yaw_motor->ecd-Zero_Yaw;
+      else
+        ecdDelta=8191-Zero_Yaw+getGimbalControl->gimbal_yaw_motor->ecd;
+      arcDelta=(ecdDelta/(8192/360))/180*3.1416;
+      if (chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_FRONT_KEY)
+      {
+        vx_set_channel = standardSpeed*arm_cos_f32(arcDelta);
+        vy_set_channel = standardSpeed*arm_sin_f32(arcDelta);
+        return;
+      }
+    else if (chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_BACK_KEY)
+      {
+        ecdDelta=ecdDelta-3.1416/2;
+        vx_set_channel = standardSpeed*arm_cos_f32(arcDelta);
+        vy_set_channel = standardSpeed*arm_sin_f32(arcDelta);
+        return;
+      }
+    if (chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_LEFT_KEY)
+      {
+        ecdDelta=ecdDelta-3.1416;
+        vx_set_channel = standardSpeed*arm_cos_f32(arcDelta);
+        vy_set_channel = standardSpeed*arm_sin_f32(arcDelta);
+        return;
+      }
+    else if (chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_RIGHT_KEY)
+      {
+        ecdDelta=ecdDelta-3.1416*1.5;
+        vx_set_channel = standardSpeed*arm_cos_f32(arcDelta);
+        vy_set_channel = standardSpeed*arm_sin_f32(arcDelta);
+        return;
+      }
+    }
+//
+12/5 log in
+.try to finish chain-pid
+.try to solve the problem of mpu 6500
+

@@ -2,10 +2,10 @@
 #include "math.h"
 #include "stdio.h"
 #include "cv_ahead.h"
-
 #include "draw.h"
 #include "vector.h"
 #define more 10
+
 void PIC_go_error(char *mes)
 {
     printf("\nPIC error:");
@@ -151,19 +151,23 @@ void cv_white_blance(PIC *pic)
 }
 u8 protected_MedianBlur_fuction(u16 count,u16 count1,u8 ksize,PIC *pic)
 {
-    u16 xThis=count1-ksize,yThis=count-ksize;
-    u16 x1,y1;
+    int xThis=count1-ksize,yThis=count-ksize;
+    int x1,y1;
     u16 sum=0;
-    u16 k2=1;
+    u16 k2=ksize*ksize;
     for(int count2=0;count2<ksize;count2++)
         for(int count3=0;count3<ksize;count3++)
         {
             x1=xThis+count3,y1=yThis+count2;
-            if(y1*pic->r.col+x1<pic->r.col*pic->r.row)
-            {
-                sum+=pic->r.element[y1*pic->r.col+x1];
-                k2++;
-            }
+            if(x1<0)
+                x1+=pic->r.col;
+            if(x1> pic->r.col)
+                x1-=pic->r.col;
+            if(y1<0)
+                y1+=pic->r.row;
+            if(y1> pic->r.col)
+                y1-=pic->r.row;
+            sum+=pic->r.element[y1*pic->r.col+x1];
         }
     sum=sum/k2;
     return sum;
@@ -210,15 +214,22 @@ PIC *cv_medianBlur(PIC *pic,unsigned char ksize)
 }
 u8 protected_gaussianBlur_fuction(u16 count,u16 count1,u8 ksize,PIC *pic,float *core)
 {
-    u16 xThis=count1-ksize,yThis=count-ksize;
-    u16 x1,y1;
+    int xThis=count1-ksize,yThis=count-ksize;
+    int x1,y1;
     float sum=0;
     for(int count2=0;count2<ksize;count2++)
         for(int count3=0;count3<ksize;count3++)
         {
             x1=xThis+count3,y1=yThis+count2;
-            if(y1*pic->r.col+x1<pic->r.col*pic->r.row)
-                sum+=pic->r.element[y1*pic->r.col+x1]*core[count3+count2*ksize];
+            if(x1<0)
+                x1+=pic->r.col;
+            if(x1> pic->r.col)
+                x1-=pic->r.col;
+            if(y1<0)
+                y1+=pic->r.row;
+            if(y1> pic->r.col)
+                y1-=pic->r.row;
+            sum+=pic->r.element[y1*pic->r.col+x1]*core[count3+count2*ksize];
         }
     return (u8)sum;
 }
@@ -263,7 +274,7 @@ PIC *cv_gaussianBlur(PIC *pic,unsigned char ksize,float sigmaXY)
                 for(int count3=0;count3<ksize;count3++)
                 {
                     x1=xThis+count3,y1=yThis+count2;
-                    sum+=(float)pic->r.element[y1*pic->r.col+x1]*gaussian_core[count3+count2*ksize];
+                    sum+=(float)pic->r.element[y1*pic->r.col+x1]*(float)gaussian_core[count3+count2*ksize];
                 }
             temp->r.element[count*pic->r.col+count1]=(u8)sum;
         }
@@ -396,7 +407,6 @@ PIC *cv_dilate(PIC *pic,unsigned char ksize)
             temp->r.element[count1*pic->r.col+count]=protected_dilate_fuction(count1,count,ksize,pic);
     return temp;
 }
-
 PIC *cv_sobel(PIC *pic,u16 Threshold)
 {
     if(pic->channel!=1)
@@ -434,7 +444,6 @@ PIC *cv_sobel(PIC *pic,u16 Threshold)
             temp->r.element[count1*pic->r.col+count]=255;
     return temp;
 }
-
 PIC *cv_laplacian(PIC *pic,u16 Threshold)
 {
     if(pic->channel!=1)
@@ -470,6 +479,47 @@ PIC *cv_laplacian(PIC *pic,u16 Threshold)
             temp->r.element[count1*pic->r.col+count]=255;
     return temp;
 }
+PIC *cv_pyrDownHalf(PIC *pic)
+{
+    if(pic->channel!=1)
+        CV_go_error("channel should be 1 at:cv_pyrDown(PIC *pic,unsigned char ksize)");
+    PIC *temp=0,*temp2=0,*thisp;
+    temp=cv_gaussianBlur(pic,3,1);
+    u16 new_col=(u16)(pic->r.col+1)/2,new_row=(u16)(pic->r.row+1)/2;
+    temp2=PIC_new(new_col,new_row,1);
+    for(u16 count1=0;count1<new_row;count1++)
+        for(u16 count2=0;count2<new_col;count2++)
+        {
+            temp2->r.element[new_col*count1+count2]=temp->r.element[temp->r.col*count1*2+2*count2];
+        }
+    PIC_free(temp);
+    return temp2;
+}
+PIC *cv_pyrUpTwice(PIC *pic)
+{
+    if(pic->channel!=1)
+        CV_go_error("channel should be 1 at:cv_pyrDown(PIC *pic,unsigned char ksize)");
+    PIC *temp=0,*temp2=0,*thisp;
+    u16 new_col=(u16)(pic->r.col)*2,new_row=(u16)(pic->r.row)*2;
+    temp2=PIC_new(new_col,new_row,1);
+
+    for(u32 count1=0;count1<(u32)new_row*new_col;count1++)
+        temp2->r.element[count1]=0;
+
+    for(int count=0;count<pic->r.row;count++)
+        for(int count1=0;count1<pic->r.col;count1++)
+            temp2->r.element[new_col*count*2+count1*2]=pic->r.element[pic->r.col*count+count1];
+    temp=cv_gaussianBlur(temp2,3,1);
+    for(u32 count1=0;count1<(u32)new_row*new_col;count1++)
+    {
+        if((u16)temp->r.element[count1]*4.8>255)
+                temp->r.element[count1]=255;
+        else
+                temp->r.element[count1]*=4.8;
+    }
+    PIC_free(temp2);
+    return temp;
+}
 
 int main()
 {
@@ -483,9 +533,10 @@ int main()
     //copypic=cv_medianBlur(mypic,5);
     //copypic=cv_gaussianBlur(mypic,3,1);
     //copypic=cv_dilate(mypic,7);
-    copypic=cv_laplacian(mypic,500);
-    BMP_pic_to_bmp(copypic,"pic\\p4.bmp");
-
+    //copypic=cv_laplacian(mypic,500);
+    //copypic=cv_medianBlur(mypic,3);
+    copypic=cv_pyrUpTwice(mypic);
+    BMP_pic_to_bmp(copypic,"pic\\p9.bmp");
     PIC_free(copypic);
     PIC_free(mypic);
     printf("hello");

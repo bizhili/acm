@@ -1,0 +1,36 @@
+# depslib dependency file v1.0
+1580652682 source:d:\acm\project\5_1_private_cv\bmp.c
+	"BMP.h"
+	"main.h"
+	"stdio.h"
+	"Draw.h"
+
+1580733302 source:d:\acm\project\5_1_private_cv\main.c
+	"main.h"
+	"math.h"
+	"stdio.h"
+	"cv_ahead.h"
+	"draw.h"
+	"vector.h"
+
+1580542874 d:\acm\project\5_1_private_cv\main.h
+
+1580389742 d:\acm\project\5_1_private_cv\draw.h
+	"main.h"
+
+1580576092 d:\acm\project\5_1_private_cv\bmp.h
+	"main.h"
+	<fcntl.h>
+	"stdlib.h"
+
+1580390032 d:\acm\project\5_1_private_cv\cv_ahead.h
+	"main.h"
+
+1580470134 d:\acm\project\5_1_private_cv\vector.h
+	"main.h"
+
+1580715256 source:d:\acm\project\5_1_private_cv\vector.c
+	"stdio.h"
+	"vector.h"
+	"math.h"
+

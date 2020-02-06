@@ -330,6 +330,7 @@ int BMP_pic_to_bmp(PIC *pic,char *fileName)
 {
 
     bmp_header header;
+
     header.ImageHight=pic->r.row;
     header.ImageWidth=pic->r.col;
 

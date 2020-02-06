@@ -34,7 +34,7 @@
 	"vector.h"
 	"math.h"
 
-1580893905 source:c:\users\qwe\desktop\acm\acm\5_1_private_cv\bmp.c
+1580974225 source:c:\users\qwe\desktop\acm\acm\5_1_private_cv\bmp.c
 	"BMP.h"
 	"main.h"
 	"stdio.h"
@@ -45,7 +45,7 @@
 	<fcntl.h>
 	"stdlib.h"
 
-1580542874 c:\users\qwe\desktop\acm\acm\5_1_private_cv\main.h
+1580997204 c:\users\qwe\desktop\acm\acm\5_1_private_cv\main.h
 
 1580389742 c:\users\qwe\desktop\acm\acm\5_1_private_cv\draw.h
 	"main.h"
@@ -58,7 +58,7 @@
 1580735394 c:\users\qwe\desktop\acm\acm\5_1_private_cv\vector.h
 	"main.h"
 
-1580919144 source:c:\users\qwe\desktop\acm\acm\5_1_private_cv\main.c
+1580997390 source:c:\users\qwe\desktop\acm\acm\5_1_private_cv\main.c
 	"main.h"
 	"math.h"
 	"stdio.h"
@@ -66,6 +66,14 @@
 	"draw.h"
 	"vector.h"
 
-1580390032 c:\users\qwe\desktop\acm\acm\5_1_private_cv\cv_ahead.h
+1580983586 c:\users\qwe\desktop\acm\acm\5_1_private_cv\cv_ahead.h
 	"main.h"
+
+1580979508 source:c:\users\qwe\desktop\acm\acm\5_1_private_cv\cv_ahead.c
+	"main.h"
+	"math.h"
+	"stdio.h"
+	"cv_ahead.h"
+	"draw.h"
+	"vector.h"
 

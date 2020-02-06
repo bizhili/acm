@@ -38,6 +38,11 @@ typedef struct
 }Axis;
 typedef struct
 {
+    u16 cita;
+    u16 distance;
+}Line;
+typedef struct
+{
     Mat r;//1 channel used
     Mat g;
     Mat b;
@@ -52,6 +57,24 @@ typedef enum
     CalculateDivide,
 }CalculateType;
 
-extern void PIC_free(PIC *pic);
-extern PIC *PIC_new(u16 width,u16 height,unsigned char channel);
+typedef enum
+{
+    ColorR=0,
+    ColorG,
+    ColorB,
+}ColorType;
+typedef enum
+{
+   GrayMedian=0,
+   GrayMaxMin,
+   GrayEye,
+}GrayMethod;
+
+
+
 #endif // MAIN_H
+
+
+
+
+

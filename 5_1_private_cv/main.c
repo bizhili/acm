@@ -29,14 +29,19 @@ void PIC_free(PIC *pic)
         pic->g.element=0;
         pic->b.element=0;
     }
-    else
+    else if(pic->channel==3)
     {
         free(pic->r.element);
         pic->r.element=0;
     }
-
+    else if(pic->channel==2)
+    {
+        free(pic->r.element);
+        free(pic->g.element);
+        pic->r.element=0;
+        pic->g.element=0;
+    }
     free(pic);
-
     pic=0;
 }
 PIC *PIC_new(u16 width,u16 height,unsigned char channel)
@@ -44,7 +49,6 @@ PIC *PIC_new(u16 width,u16 height,unsigned char channel)
     PIC *pic=0;
     if(channel==3)
     {
-
         pic=(PIC *)malloc(1*sizeof(PIC));
         pic->b.element=(unsigned char *)malloc(width*height+more);
         pic->r.element=(unsigned char *)malloc(width*height+more);
@@ -69,7 +73,20 @@ PIC *PIC_new(u16 width,u16 height,unsigned char channel)
         pic->channel=1;
         return pic;
     }
-    else PIC_go_error("channel should be 1 or 2 at:PIC_new(PIC *pic,u16 width,u16 height,unsigned char channel)");
+    else if(channel==2)
+    {
+        pic=(PIC *)malloc(1*sizeof(PIC));
+        pic->r.element=(unsigned char *)malloc(width*height+more);
+        pic->g.element=(unsigned char *)malloc(width*height+more);
+        pic->b.element=0;
+        pic->r.col=width;
+        pic->r.row=height;
+        pic->g.col=width;
+        pic->g.row=height;
+        pic->channel=2;
+        return pic;
+    }
+    else PIC_go_error("channel should be 1,2,3 at:PIC_new(PIC *pic,u16 width,u16 height,unsigned char channel)");
 }
 PIC *PIC_copy(PIC *pic)
 {
@@ -479,6 +496,123 @@ PIC *cv_laplacian(PIC *pic,u16 Threshold)
             temp->r.element[count1*pic->r.col+count]=255;
     return temp;
 }
+PIC *cv_canny(PIC *pic,u16 lower_threshold,u16 upper_threshod)
+{
+    if(pic->channel!=1)
+        CV_go_error("channel should be 3 at:cv_canny(PIC *pic,float lower_threshold,float upper_threshod)");
+    PIC *temp,*temp1,*temp3;
+    temp1=cv_gaussianBlur(pic,3,1);
+    temp=PIC_new(pic->r.col,pic->r.row,1);
+    temp3=PIC_new(pic->r.col,pic->r.row,1);
+    u16 x,y;
+    u8 ksize=3;
+    int Gx,Gy,G;
+    float dG;
+    u16 *temp2;
+    temp2=(u16 *)malloc(pic->r.row*pic->r.col*2);
+    for(int count=ksize;count<pic->r.row-ksize;count++)
+        for(int count1=ksize;count1<pic->r.col-ksize;count1++)
+        {
+            x=count1,y=count;
+            Gx=(temp1->r.element[(y-1)*temp1->r.col+(x+1)]+2*temp1->r.element[(y)*temp1->r.col+(x+1)]+temp1->r.element[(y+1)*temp1->r.col+(x+1)])-
+            (temp1->r.element[(y-1)*temp1->r.col+(x-1)]+2*temp1->r.element[(y)*temp1->r.col+(x-1)]+temp1->r.element[(y+1)*temp1->r.col+(x-1)]);
+            Gy=(temp1->r.element[(y-1)*temp1->r.col+(x-1)]+2*temp1->r.element[(y-1)*temp1->r.col+(x)]+temp1->r.element[(y-1)*temp1->r.col+(x+1)])-
+            (temp1->r.element[(y+1)*temp1->r.col+(x-1)]+2*temp1->r.element[(y+1)*temp1->r.col+(x)]+temp1->r.element[(y+1)*temp1->r.col+(x+1)]);
+            G=abs(Gx)+abs(Gy);
+            if(Gx)
+            dG=Gy/Gx;
+            else
+            dG=5;
+            if(G>lower_threshold)
+            {
+                temp3->r.element[count*pic->r.col+count1]=255;
+                temp2[count*pic->r.col+count1]=G;
+                if(dG>-0.414 && dG<=0.414)
+                    temp->r.element[count*pic->r.col+count1]=3;
+                else if(dG>0.414 && dG<=2.414)
+                    temp->r.element[count*pic->r.col+count1]=4;
+                else if(dG>2.414 || dG<=-2.414)
+                    temp->r.element[count*pic->r.col+count1]=2;
+                else if(dG>-2.414 && dG<=-0.414)
+                    temp->r.element[count*pic->r.col+count1]=1;
+            }
+            else
+            {
+                temp3->r.element[count*pic->r.col+count1]=255;
+                temp2[count*pic->r.col+count1]=0;
+                temp->r.element[count*pic->r.col+count1]=0;
+            }
+        }
+    u32 maxA;
+    u16 x2,y2;
+    for(int count=ksize;count<pic->r.row-ksize;count++)
+        for(int count1=ksize;count1<pic->r.col-ksize;count1++)
+        {
+            if(temp->r.element[count*pic->r.col+count1])
+            {
+                maxA=count*pic->r.col+count1;
+                if(!(temp->r.element[count*pic->r.col+count1]-1))
+                {
+                    if(temp2[(count-1)*pic->r.col+count1+1]>temp2[maxA])
+                        maxA=(count-1)*pic->r.col+count1+1;
+                    if(temp2[(count+1)*pic->r.col+count1-1]>temp2[maxA])
+                        maxA=(count+1)*pic->r.col+count1-1;
+                    temp3->r.element[maxA]=0;
+                }
+                else
+                {
+                    x2=(temp->r.element[(u16)count*pic->r.col+count1]-1) >> 1;
+                    y2=(temp->r.element[(u16)count*pic->r.col+count1]-1) & (u8)1;
+                    if(temp2[(count-y2)*pic->r.col+count1-x2]>temp2[maxA])
+                        maxA=(count-y2)*pic->r.col+count1-x2;
+                    if(temp2[(count+y2)*pic->r.col+count1+x2]>temp2[maxA])
+                        maxA=(count+y2)*pic->r.col+count1+x2;
+                    temp3->r.element[maxA]=0;
+                }
+            }
+        }
+    u8 flag=0;
+    for(int count=ksize;count<pic->r.row-ksize;count++)
+        for(int count1=ksize;count1<pic->r.col-ksize;count1++)
+        {
+            if(!temp3->r.element[count*pic->r.col+count1])
+            {
+                x=count1-1,y=count-1;
+                flag=0;
+                for(int count2=0;count2<3;count2++)
+                {
+                    if(flag)
+                        break;
+                    for(int count3=0;count3<3;count3++)
+                    {
+                        if(temp2[(y+count2)*pic->r.col+count3+x]>upper_threshod)
+                        {
+                            flag=1;
+                            break;
+                        }
+                    }
+                }
+                if(!flag)
+                    temp3->r.element[count*pic->r.col+count1]=255;
+            }
+        }
+    for(int count=0;count<ksize;count++)
+        for(int count1=0;count1<pic->r.col;count1++)
+            temp3->r.element[count*pic->r.col+count1]=255;
+    for(int count=pic->r.row-ksize;count<pic->r.row;count++)
+        for(int count1=0;count1<pic->r.col;count1++)
+            temp3->r.element[count*pic->r.col+count1]=255;
+    for(int count=0;count<ksize;count++)
+        for(int count1=0;count1<pic->r.row;count1++)
+            temp3->r.element[count1*pic->r.col+count]=255;
+    for(int count=pic->r.col-ksize;count<pic->r.col;count++)
+        for(int count1=0;count1<pic->r.row;count1++)
+            temp3->r.element[count1*pic->r.col+count]=255;
+    PIC_free(temp);
+    PIC_free(temp1);
+    free(temp2);
+    return temp3;
+}
 PIC *cv_pyrDownHalf(PIC *pic)
 {
     if(pic->channel!=1)
@@ -521,12 +655,13 @@ PIC *cv_pyrUpTwice(PIC *pic)
     return temp;
 }
 
+
 int main()
 {
     PIC *mypic=0,*copypic=0;
     RGBQuAD colorBasic={130,40,230},colorLine={140,55,255};
-    RGBQuAD lower={64,130,60},upper={90,190,70};
-    mypic=BMP_bmp_to_pic("pic\\p2.bmp");
+    RGBQuAD lower={0,0,0},upper={150,150,150};
+    mypic=BMP_bmp_to_pic("pic\\p3.bmp");
     //copypic=PIC_copy(mypic);
     //CV_inRange(mypic,lower,upper);
     //cv_white_blance(mypic);
@@ -535,13 +670,11 @@ int main()
     //copypic=cv_dilate(mypic,7);
     //copypic=cv_laplacian(mypic,500);
     //copypic=cv_medianBlur(mypic,3);
-    copypic=cv_pyrUpTwice(mypic);
-    BMP_pic_to_bmp(copypic,"pic\\p9.bmp");
+    //CV_inRange(mypic,lower,upper);
+    copypic=cv_sobel(mypic,400);
+    BMP_pic_to_bmp(copypic,"pic\\p4.bmp");
     PIC_free(copypic);
     PIC_free(mypic);
     printf("hello");
     return 0;
 }
-
-
-

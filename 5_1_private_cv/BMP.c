@@ -61,17 +61,17 @@ void bmp_go_error(char *mes)
 
 int bmp_read(char *filename,bmp_header *header)
 {
-    char fname_bmp[128];
-    sprintf(fname_bmp, "%s", filename);
     FILE *fp=0;
-    if (!(fp = fopen(fname_bmp, "rb")))
+    if (!(fp = fopen(filename, "rb")))
         bmp_go_error("can not open file at: bmp_read(unsigned char *image, char *filename,bmp_header1 *header)");
-    fread(header ,1, sizeof(bmp_header),fp);
 
+    fread(header ,1, sizeof(bmp_header),fp);
     image1=(unsigned char *)malloc(header->ImageHight*header->ImageWidth*header->BPP/8+header->FileOffset-54);//
+
     if (image1==NULL)
         bmp_go_error("failed to malloc at:bmp_read(unsigned char *image, char *filename,bmp_header1 *header)");
-    fread(image1,1,(size_t)(long long)(header->ImageHight*header->ImageWidth*header->BPP/8),fp);
+
+    fread(image1,1,(size_t)(long long)(header->ImageHight*header->ImageWidth*header->BPP/8+header->FileOffset-54),fp);
     fclose(fp);
     return 0;
 }
@@ -86,12 +86,6 @@ int bmp_write(char *filename,bmp_header *header1)//3 cannel
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0
     };
-    long file_size = (long)header1->ImageWidth * (long)header1->ImageHight * 3 + 54;
-    header[2] = (unsigned char)(file_size &0x000000ff);
-    header[3] = (file_size >> 8) & 0x000000ff;
-    header[4] = (file_size >> 16) & 0x000000ff;
-    header[5] = (file_size >> 24) & 0x000000ff;
-
     long width = header1->ImageWidth;
     header[18] = width & 0x000000ff;
     header[19] = (width >> 8) &0x000000ff;
@@ -103,21 +97,35 @@ int bmp_write(char *filename,bmp_header *header1)//3 cannel
     header[23] = (height >> 8) &0x000000ff;
     header[24] = (height >> 16) &0x000000ff;
     header[25] = (height >> 24) &0x000000ff;
+
+    long file_size = (long)header1->ImageWidth * (long)header1->ImageHight * 3 + 54;
+
+    header[2] = (unsigned char)(file_size &0x000000ff);
+    header[3] = (file_size >> 8) & 0x000000ff;
+    header[4] = (file_size >> 16) & 0x000000ff;
+    header[5] = (file_size >> 24) & 0x000000ff;
     FILE *fp;
     if (!(fp = fopen(filename, "wb")))
         return -1;
+
+    u8 zero=0xff;
+
     fwrite(header, sizeof(unsigned char), 54, fp);
+
+    printf("@%d",file_size);
 
     if(header1->BPP==24)//24 bits color
         fwrite(image1, sizeof(unsigned char), (size_t)(long)width * height * 3+header1->FileOffset-54, fp);
 
     else if(header1->BPP==32)//32bits color
-        for(int count=0;count<(header1->FileSize-header1->FileOffset)/4;count++)//312,123,321,231,213,
+        for(int count=0;count<(width*height*4-header1->FileOffset)/4;count++)//312,123,321,231,213,
         {
             fwrite(&image1[header1->FileOffset-54+count*4+0], sizeof(unsigned char),1, fp);
             fwrite(&image1[header1->FileOffset-54+count*4+1], sizeof(unsigned char),1, fp);
             fwrite(&image1[header1->FileOffset-54+count*4+2], sizeof(unsigned char),1, fp);
         }
+    for(int count1=0;count1<2048;count1++)
+            fwrite(&zero, sizeof(unsigned char),1, fp);
     fclose(fp);
 
     return 0;
@@ -324,6 +332,7 @@ int BMP_pic_to_bmp(PIC *pic,char *fileName)
     bmp_header header;
     header.ImageHight=pic->r.row;
     header.ImageWidth=pic->r.col;
+
     if(pic->channel==3)
     {
         header.FileOffset=54;

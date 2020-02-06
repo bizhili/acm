@@ -1,7 +1,7 @@
 import cv2
 ax=0
 ay=0
-name='p1.bmp'
+name='p1_3.bmp'
 img =cv2.imread(name)
 hsv=cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
 def mouse_event(event, x,y,flags,param):

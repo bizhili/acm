@@ -9,4 +9,5 @@ extern void Draw_cirle(PIC *pic,Axis center,unsigned short rad,RGBQuAD color,uns
 extern void Draw_rectangle(PIC *pic,Axis axis1,Axis axis2,RGBQuAD color,unsigned short pixel);
 extern void Draw_point(PIC *pic,Axis axis,RGBQuAD color);
 
+extern u16 Draw_line_hough(PIC *pic,Line *lines,RGBQuAD color);
 #endif // MAIN_H

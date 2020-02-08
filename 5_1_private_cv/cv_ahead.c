@@ -8,51 +8,46 @@
 
 void PIC_go_error(char *mes)
 {
+    free_all();
     printf("\nPIC error:");
     printf(mes);
     exit(0);
 }
 void CV_go_error(char *mes)
 {
+    free_all();
     printf("\nCV error:");
     printf(mes);
     exit(0);
 }
+
 void PIC_free(PIC *pic)
 {
     if(pic->channel==3)
     {
-        free(pic->r.element);
-        free(pic->g.element);
-        free(pic->b.element);
-        pic->r.element=0;
-        pic->g.element=0;
-        pic->b.element=0;
+        my_free(pic->r.element);
+        my_free(pic->g.element);
+        my_free(pic->b.element);
     }
     else if(pic->channel==3)
     {
-        free(pic->r.element);
-        pic->r.element=0;
+        my_free(pic->r.element);
     }
     else if(pic->channel==2)
     {
-        free(pic->r.element);
-        free(pic->g.element);
-        pic->r.element=0;
-        pic->g.element=0;
+        my_free(pic->r.element);
+        my_free(pic->g.element);
     }
-    free(pic);
-    pic=0;
 }
 PIC *PIC_new(u16 width,u16 height,unsigned char channel)
 {
     PIC *pic=0;
+    pic=(PIC *)my_malloc(1*sizeof(PIC));
     if(channel==3)
     {
-        pic=(PIC *)malloc(1*sizeof(PIC));
-        pic->b.element=(unsigned char *)malloc(width*height+more);
-        pic->r.element=(unsigned char *)malloc(width*height+more);
-        pic->g.element=(unsigned char *)malloc(width*height+more);
+        pic->b.element=(unsigned char *)my_malloc(width*height+more);
+        pic->r.element=(unsigned char *)my_malloc(width*height+more);
+        pic->g.element=(unsigned char *)my_malloc(width*height+more);
         pic->b.col=width;
         pic->b.row=height;
         pic->g.col=width;
@@ -64,8 +59,7 @@ PIC *PIC_new(u16 width,u16 height,unsigned char channel)
     }
     else if(channel==1)
     {
-        pic=(PIC *)malloc(1*sizeof(PIC));
-        pic->r.element=(unsigned char *)malloc(width*height+more);
+        pic->r.element=(unsigned char *)my_malloc(width*height+more);
         pic->g.element=0;
         pic->b.element=0;
         pic->r.col=width;
@@ -75,9 +69,8 @@ PIC *PIC_new(u16 width,u16 height,unsigned char channel)
     }
     else if(channel==2)
     {
-        pic=(PIC *)malloc(1*sizeof(PIC));
-        pic->r.element=(unsigned char *)malloc(width*height+more);
-        pic->g.element=(unsigned char *)malloc(width*height+more);
+        pic->r.element=(unsigned char *)my_malloc(width*height+more);
+        pic->g.element=(unsigned char *)my_malloc(width*height+more);
         pic->b.element=0;
         pic->r.col=width;
         pic->r.row=height;
@@ -102,7 +95,6 @@ PIC *PIC_copy(PIC *pic)
             mypic->g.element[count]=pic->g.element[count];
         for(int count=0;count<pic->b.col*pic->b.row;count++)
             mypic->r.element[count]=pic->r.element[count];
-
     }
     else
     {
@@ -166,10 +158,10 @@ void CV_inRange(PIC *pic,RGBQuAD lower,RGBQuAD upper)
             pic->r.element[count]=255;
         }
         pic->channel=1;
-        free(pic->b.element);
-        pic->b.element=0;
-        free(pic->g.element);
-        pic->g.element=0;
+        my_free(pic->b.element);
+        pic->b.element=(unsigned char *)my_malloc(1);
+        my_free(pic->g.element);
+        pic->g.element=(unsigned char *)my_malloc(1);
         return ;
     }
     return;
@@ -226,7 +218,7 @@ PIC *cv_otsuThreshold(PIC *pic)
             temp1->r.element[count]=255;
     }
     if(pic->channel==3)
-        free(temp);
+        my_free(temp);
     return temp1;
 }
 u8 protected_MedianThreshold_fuction(u16 count,u16 count1,u8 ksize,PIC *pic,float C)
@@ -420,7 +412,7 @@ PIC *cv_gaussianBlur(PIC *pic,unsigned char ksize,float sigmaXY)
     u16 xThis,yThis,x1,y1;
     u16 k2=ksize*ksize;
     u16 number=0;
-    gaussian_core=(float *)malloc(sizeof(float)*ksize*ksize);
+    gaussian_core=(float *)my_malloc(sizeof(float)*ksize*ksize);
     for(int count=(int)-ksize/2;count<=(int)ksize/2;count++)
         for(int count1=(int)-ksize/2;count1<=(int)ksize/2;count1++)
         {
@@ -461,7 +453,7 @@ PIC *cv_gaussianBlur(PIC *pic,unsigned char ksize,float sigmaXY)
     for(int count=pic->r.col-ksize;count<pic->r.col;count++)
         for(int count1=0;count1<pic->r.row;count1++)
             temp->r.element[count1*pic->r.col+count]=protected_gaussianBlur_fuction(count1,count,ksize,pic,gaussian_core);
-    free(gaussian_core);
+    my_free(gaussian_core);
     return temp;
 }
 u8 protected_erode_fuction(u16 count,u16 count1,u8 ksize,PIC *pic)
@@ -663,7 +655,7 @@ PIC *cv_canny(PIC *pic,u16 lower_threshold,u16 upper_threshod)
     int Gx,Gy,G;
     float dG;
     u16 *temp2;
-    temp2=(u16 *)malloc(pic->r.row*pic->r.col*2);
+    temp2=(u16 *)my_malloc(pic->r.row*pic->r.col*2);
     for(int count=ksize;count<pic->r.row-ksize;count++)
         for(int count1=ksize;count1<pic->r.col-ksize;count1++)
         {
@@ -764,7 +756,7 @@ PIC *cv_canny(PIC *pic,u16 lower_threshold,u16 upper_threshod)
             temp3->r.element[count1*pic->r.col+count]=255;
     PIC_free(temp);
     PIC_free(temp1);
-    free(temp2);
+    my_free(temp2);
     return temp3;
 }
 PIC *cv_pyrDownHalf(PIC *pic)

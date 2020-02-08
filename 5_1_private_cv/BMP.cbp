@@ -34,12 +34,19 @@
 		<Unit filename="BMP.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="Draw.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="Draw.h" />
 		<Unit filename="Graph.h" />
 		<Unit filename="cv_ahead.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="cv_core.h" />
+		<Unit filename="cv_stdlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="cv_stdlib.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

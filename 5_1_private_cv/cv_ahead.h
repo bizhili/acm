@@ -1,6 +1,7 @@
 #ifndef CV_AHEAD_H
 #define CV_AHEAD_H
 #include "main.h"
+
 extern void CV_go_error(char *mes);
 extern void PIC_free(PIC *pic);
 extern PIC *PIC_new(u16 width,u16 height,unsigned char channel);

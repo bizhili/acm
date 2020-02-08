@@ -4,7 +4,7 @@
 #include "cv_ahead.h"
 #include "draw.h"
 #include "vector.h"
-
+#include "cv_stdlib.h"
 Line *cv_houghLines(PIC *pic,u16 threshold)
 {
     if(pic->channel!=1)
@@ -46,8 +46,8 @@ Line *cv_houghLines(PIC *pic,u16 threshold)
             }
     Line *save;
     save=(Line *)malloc(sizeof(Line));
-    if(threshold<countnum/270)
-        threshold=(u16)countnum/270;
+    if(threshold<countnum/400)
+        threshold=(u16)countnum/400;
     u16 countnum1=0;
     for(int count=0;count<MaxLength;count++)
         for(int count1=0;count1<180;count1++)
@@ -69,13 +69,18 @@ Line *cv_houghLines(PIC *pic,u16 threshold)
     free(check);
     return save;
 }
+void cv_findCountours(PIC *pic)
+{
+    ;
+}
 int main()
 {
-    PIC *mypic=0,*copypic=0;
+    PIC *mypic=0,*mypic2,*copypic=0;
     Line *getLines;
     RGBQuAD colorBasic={130,40,230},colorLine={140,55,255};
     RGBQuAD lower={170,80,70},upper={220,140,120};
-    mypic=BMP_bmp_to_pic("pic\\p4_7.bmp");
+    mypic=BMP_bmp_to_pic("pic\\p4_8.bmp");
+    mypic2=BMP_bmp_to_pic("pic\\p1_8.bmp");
     //copypic=PIC_copy(mypic);
     //CV_inRange(mypic,lower,upper);
     //cv_white_blance(mypic);
@@ -86,12 +91,13 @@ int main()
     //copypic=cv_medianBlur(mypic,3);
     //CV_inRange(mypic,lower,upper);
     //copypic=cv_sobel(mypic,400);
-    getLines=cv_houghLines(mypic,200);
-    //BMP_pic_to_bmp(copypic,"pic\\p4_7.bmp");
-    //PIC_free(copypic);
-    free(getLines);
-    PIC_free(mypic);
+    getLines=cv_houghLines(mypic,190);
+    printf("%d",Draw_line_hough(mypic2,getLines,colorLine));
+    BMP_pic_to_bmp(mypic2,"pic\\p5_8.bmp");
+
+    free_all();
     printf("hello");
 
     return 0;
+
 }

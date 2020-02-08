@@ -112,7 +112,6 @@ int bmp_write(char *filename,bmp_header *header1)//3 cannel
 
     fwrite(header, sizeof(unsigned char), 54, fp);
 
-    printf("@%d",file_size);
 
     if(header1->BPP==24)//24 bits color
         fwrite(image1, sizeof(unsigned char), (size_t)(long)width * height * 3+header1->FileOffset-54, fp);

@@ -22,6 +22,59 @@ void Draw_color_all(PIC *pic,RGBQuAD color)
     for(int count=0;count<pic->b.row*pic->b.col;count++)
         pic->r.element[count]=color.rgbRed;
 }
+u16 Draw_line_hough(PIC *pic,Line *lines,RGBQuAD color)
+{
+    float cosX,sinX,P,PI=3.1415926,cotX,Y,X;
+    int thisP;
+    int test,test1;
+    test=lines[0].cita;
+    test1=lines[0].distance;
+    u16 countnum=0;
+    for(int count=0;lines[count].cita || lines[count].distance;count++)
+    {
+        countnum++;
+        P=lines[count].distance;
+        cosX=cos((float)lines[count].cita/180*PI);
+        sinX=sin((float)lines[count].cita/180*PI);
+        if(sinX)
+        {
+            cotX=cosX/sinX;
+            P/=sinX;
+            for(int count1=1;count1<pic->r.col-1;count1++)
+            {
+                X=count1;
+                Y=(int)(P-X*cotX);
+                thisP=(int)X+Y*pic->r.col;
+                if(X<pic->r.col && Y<pic->r.row &&Y>0)
+                {
+                    pic->r.element[(int)thisP]=color.rgbRed;
+                    if(pic->channel==3)
+                    {
+                        pic->g.element[(int)thisP]=color.rgbGreen;
+                        pic->b.element[(int)thisP]=color.rgbBlue;
+                    }
+                }
+
+            }
+        }
+        else
+        {
+            X=P/cosX;
+            for(int count1=3;count1<pic->r.row-3;count1++)
+            {
+                Y=count1;
+                pic->r.element[(int)(X+Y*pic->r.col)]=color.rgbRed;
+                if(pic->channel==3)
+                    {
+                        pic->g.element[(int)(X+Y*pic->r.col)]=color.rgbGreen;
+                        pic->b.element[(int)(X+Y*pic->r.col)]=color.rgbBlue;
+                    }
+            }
+        }
+    }
+    return countnum;
+
+}
 void Draw_line(PIC *pic,Axis axis1,Axis axis2,RGBQuAD color,unsigned short pixel)
 {
     u16 deltaX=abs(axis1.x-axis2.x),deltaY=abs(axis1.y-axis2.y);

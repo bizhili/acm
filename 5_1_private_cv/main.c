@@ -5,6 +5,15 @@
 #include "draw.h"
 #include "vector.h"
 #include "cv_stdlib.h"
+
+/* initializes 8-element array for fast access to 3x3 neighborhood of a pixel */
+#define  CV_INIT_3X3_DELTAS( deltas, step, nch )            \
+	((deltas)[0] =  (nch),  (deltas)[1] = -(step) + (nch),  \
+	(deltas)[2] = -(step), (deltas)[3] = -(step) - (nch),  \
+	(deltas)[4] = -(nch),  (deltas)[5] =  (step) - (nch),  \
+	(deltas)[6] =  (step), (deltas)[7] =  (step) + (nch))
+static const Axis icvCodeDeltas[8] =
+{ {1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1} };
 Line *cv_houghLines(PIC *pic,u16 threshold)
 {
     if(pic->channel!=1)

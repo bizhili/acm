@@ -4,6 +4,7 @@
 
 void Draw_go_error(char *mes)
 {
+    free_all();
     printf("\n Draw error:");
     printf(mes);
     exit(0);

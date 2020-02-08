@@ -54,6 +54,7 @@ void bmp_print_info(char *name1)
 }
 void bmp_go_error(char *mes)
 {
+    free_all();
     printf("\n BMP error:");
     printf(mes);
     exit(0);

@@ -1,33 +1,54 @@
 #include"cv_stdlib.h"
 
-static unsigned int mallocList[MAX_MALLOC_SIZE],mallocLength=0;
+static unsigned int mallocLength=0,SECTORNUM=0,*mallocList,*head,countPublic=0;
 
 void free_all()
 {
-    void *pointer;
-    printf(" %d ",mallocLength);
-    for(int count=0;count<mallocLength;count++)
+    void *pointer,*pointer2;
+    int count;
+    for(;mallocLength;)
     {
-        if(mallocList[count])
+        for(count=0;count<SECTOR_SIZE-1 && mallocLength;count++)
         {
-            pointer=mallocList[count];
+            pointer=head[count];
             free(pointer);
+            mallocLength--;
         }
+        pointer2=head;
+        if(mallocLength)
+            head=head[SECTOR_SIZE-1];
+        free(pointer2);
     }
     return;
 }
 
 void mallocList_append(unsigned int address)
 {
-    if(mallocLength<MAX_MALLOC_SIZE)
-        mallocList[mallocLength]=address;
+    unsigned int *pointer=0;
+    if(!SECTORNUM)
+    {
+        pointer=(unsigned int *)malloc(SECTOR_SIZE*4);
+        head=pointer;
+        mallocList=head;
+        SECTORNUM=1;
+    }
+    if(countPublic<SECTOR_SIZE-1)
+    {
+        mallocList[countPublic]=address;
+        countPublic++;
+        mallocLength++;
+    }
     else
     {
-        free_all();
-        printf("malloc_error : out of range at :mallocList_append(u16 address)");
-        exit(0);
+        pointer=(unsigned int *)malloc(SECTOR_SIZE*4);
+        mallocList[SECTOR_SIZE-1]=pointer;
+        mallocList=pointer;
+        countPublic=0;
+        SECTORNUM++;
+        mallocList[countPublic]=address;
+        countPublic++;
+        mallocLength++;
     }
-    mallocLength++;
 }
 
 void *my_malloc(unsigned int uSize)

@@ -45,7 +45,7 @@
 	<fcntl.h>
 	"stdlib.h"
 
-1580997204 c:\users\qwe\desktop\acm\acm\5_1_private_cv\main.h
+1581849558 c:\users\qwe\desktop\acm\acm\5_1_private_cv\main.h
 
 1581067631 c:\users\qwe\desktop\acm\acm\5_1_private_cv\draw.h
 	"main.h"
@@ -58,7 +58,7 @@
 1580735394 c:\users\qwe\desktop\acm\acm\5_1_private_cv\vector.h
 	"main.h"
 
-1581178952 source:c:\users\qwe\desktop\acm\acm\5_1_private_cv\main.c
+1581850059 source:c:\users\qwe\desktop\acm\acm\5_1_private_cv\main.c
 	"main.h"
 	"math.h"
 	"stdio.h"
@@ -78,10 +78,11 @@
 	"draw.h"
 	"vector.h"
 
-1581155027 source:c:\users\qwe\desktop\acm\acm\5_1_private_cv\draw.c
+1581438958 source:c:\users\qwe\desktop\acm\acm\5_1_private_cv\draw.c
 	"BMP.h"
 	"main.h"
 	"math.h"
+	"Draw.h"
 
 1581171169 c:\users\qwe\desktop\acm\acm\5_1_private_cv\cv_stdlib.h
 	"stdlib.h"

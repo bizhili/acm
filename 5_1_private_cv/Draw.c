@@ -1,7 +1,7 @@
 #include "BMP.h"
 #include "main.h"
 #include "math.h"
-
+#include "Draw.h"
 void Draw_go_error(char *mes)
 {
     free_all();
@@ -9,19 +9,28 @@ void Draw_go_error(char *mes)
     printf(mes);
     exit(0);
 }
-void Draw_1_channel_color_all(PIC *pic,unsigned char color)
-{
-    for(int count=0;count<pic->b.row*pic->b.col;count++)
-        pic->r.element[count]=color;
-}
 void Draw_color_all(PIC *pic,RGBQuAD color)
 {
-    for(int count=0;count<pic->b.row*pic->b.col;count++)
-        pic->b.element[count]=color.rgbBlue;
-    for(int count=0;count<pic->b.row*pic->b.col;count++)
-        pic->g.element[count]=color.rgbGreen;
-    for(int count=0;count<pic->b.row*pic->b.col;count++)
-        pic->r.element[count]=color.rgbRed;
+    if(pic->channel==3)
+    {
+        for(int count=0;count<pic->b.row*pic->b.col;count++)
+            pic->b.element[count]=color.rgbBlue;
+        for(int count=0;count<pic->b.row*pic->b.col;count++)
+            pic->g.element[count]=color.rgbGreen;
+        for(int count=0;count<pic->b.row*pic->b.col;count++)
+            pic->r.element[count]=color.rgbRed;
+    }
+    else if(pic->channel==1)
+    {
+
+        for(int count=0;count<pic->r.row*pic->r.col;count++)
+        {
+
+            pic->r.element[count]=color.rgbRed;
+        }
+    }
+    return ;
+
 }
 u16 Draw_line_hough(PIC *pic,Line *lines,RGBQuAD color)
 {

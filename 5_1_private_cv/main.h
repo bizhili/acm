@@ -17,25 +17,45 @@ typedef uint32_t u32;
 typedef uint16_t u16;
 typedef uint8_t  u8;
 typedef uint8_t bool_t;
-
+#define EdgePointNum 32
+#define EdgeNum 32
 typedef struct
 {
     u16 row, col;
     u8 *element;
 }Mat;
+
 typedef struct tagRGBQuAD
 {
     //定义每个像素的数据类型
-    unsigned char  rgbBlue;
-    unsigned char  rgbGreen;
     unsigned char  rgbRed;
+    unsigned char  rgbGreen;
+    unsigned char  rgbBlue;
     unsigned char rgbReserved; //保留值
 }RGBQuAD;
+
 typedef struct
 {
-    unsigned short x;
-    unsigned short y;
+    short x;
+    short y;
 }Axis;
+
+typedef struct
+{
+    u8 flag;
+    u16 pointNum;
+    u32 allPointNum;
+    Axis *point;
+    struct Edge *nextEdge;
+}Edge;
+
+typedef struct
+{
+    u16 edgeNum;
+    u16 frameNum;
+    Edge *edgeAll;
+}EdgeGraph;
+
 typedef struct
 {
     u16 cita;

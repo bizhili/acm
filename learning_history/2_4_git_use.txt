@@ -1,0 +1,18 @@
+2020/3/8
+github use:
+1.start Synchronize on a new device:
+>>mkdir a new folder
+>>cd
+>>git init
+>>git remote add origin 你的仓库的网址
+>>git pull origin master
+2.upload
+>>git add .
+>>git commit -m "notice"
+>>git push -u origin master
+3.use without enter password every time:
+git bash进入你的项目目录，输入：
+git config --global credential.helper store
+then pull again and enter again and you will not take it again
+4.start with a new device:
+visit at: https://blog.csdn.net/wingter92/article/details/77822141

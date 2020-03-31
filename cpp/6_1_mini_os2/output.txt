@@ -1,0 +1,165 @@
+CHOOSE THE ALGORITHM:
+1 PRIORITY
+2 ROUNDROBIN
+3 EXIT
+input name and needtime, please input 5 processes,set of time: *ms
+
+Process li1 is booting
+
+Process li2 is booting
+
+Process li4 is booting
+			|
+	|
+	|
+			|
+			|
+
+Process li3 is booting
+	|
+			|
+			|
+	|
+			|
+	|
+			|
+	|
+			|
+	|
+			|
+			|
+	|
+			|
+			|
+	|
+	|
+	|
+	|
+	|
+|
+		|
+|
+		|
+|
+		|
+		|
+|
+		|
+|
+		|
+|
+		|
+		|
+|
+		|
+|
+		|
+		|
+|
+		|
+|
+|
+		|
+|
+		|
+		|
+|
+		|
+|
+		|
+|
+		|
+		|
+|
+		|
+|
+		|
+		|
+|
+		|
+		|
+		|
+		|
+		|
+|
+|
+		|
+|
+		|
+|
+		|
+		|
+|
+		|
+|
+		|
+		|
+|
+		|
+|
+		|
+|
+		|
+		|
+|
+		|
+|
+		|
+|
+		|
+		|
+|
+		|
+|
+		|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+
+Process li5 is booting
+				|
+				|
+				|
+				|
+				|
+				|
+				|
+				|
+				|
+				|
+				|
+os finished
+name    cputime    needTime    priority	  waittime    startTime    endTime     power		state
+li1        55        55        2.381818        76        1        135        2.381818        finish
+name    cputime    needTime    priority	  waittime    startTime    endTime     power		state
+li2        11        11        2.181818        13        2        29        2.181818        finish
+name    cputime    needTime    priority	  waittime    startTime    endTime     power		state
+li3        40        40        2.275000        51        10        110        2.275000        finish
+name    cputime    needTime    priority	  waittime    startTime    endTime     power		state
+li4        9        9        2.111111        10        0        24        2.111111        finish
+name    cputime    needTime    priority	  waittime    startTime    endTime     power		state
+li5        10        10        1.100000        1        208        219        1.100000        finish
+All processes have finished,press any key to exit

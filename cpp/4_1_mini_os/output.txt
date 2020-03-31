@@ -1,0 +1,6 @@
+CHOOSE THE ALGORITHM:
+1 PRIORITY
+2 ROUNDROBIN
+3 EXIT
+input name and needtime, please input 3 processes
+,set of time: *10ms

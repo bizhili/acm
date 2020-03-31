@@ -1,0 +1,16 @@
+# depslib dependency file v1.0
+1584280348 source:/home/3067842904qq/git/acm/cpp/1_1_operating_system_1/cv_stdlib.c
+	"cv_stdlib.h"
+
+1584262980 /home/3067842904qq/git/acm/cpp/1_1_operating_system_1/cv_stdlib.h
+	"stdlib.h"
+	"stdio.h"
+
+1584283600 source:/home/3067842904qq/git/acm/cpp/1_1_operating_system_1/main.cpp
+	"main.h"
+
+1584286100 /home/3067842904qq/git/acm/cpp/1_1_operating_system_1/main.h
+	<stdio.h>
+	<time.h>
+	"cv_stdlib.h"
+

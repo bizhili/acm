@@ -1,0 +1,59 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 04/18/2020 23:03:07 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02
+OBJECT MODULE PLACED IN main.OBJ
+ASSEMBLER INVOKED BY: C:\Keil_c51\C51\BIN\A51.EXE main.s SET(LARGE) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     ORG 0000H
+0000 020026            2     LJMP START
+0023                   3     org 0023H
+0023 02003C            4     LJMP RECEIVE
+0026                   5     start:
+0026 759850            6         MOV SCON, #0x50;0101 0000usart mode 1 
+0029 53877F            7         ANL PCON, #0x7F;smod=0
+002C 758920            8         MOV TMOD, #0x20;timer1 works as Baud rate producer
+002F 758DFD            9         MOV TH1, #0xFD;Baud rete=9600,as core rate@11.0592MHz
+0032 758BFD           10         MOV TL1, #0xFD;
+0035 75A890           11         MOV IE,#10010000B;enable all interrupt and usart interrupt
+0038 D28E             12         SETB TR1; start timer counter
+003A 80FE             13         SJMP $
+003C                  14     RECEIVE:
+003C 209801           15         JB RI,HANDL
+003F 32               16         RETI
+0040                  17     HANDL:
+0040 859990           18         MOV P1,SBUF
+0043 C298             19         CLR RI
+0045 32               20         RETI
+                      21         
+                      22     
+                      23     END
+A51 MACRO ASSEMBLER  MAIN                                                                 04/18/2020 23:03:07 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+HANDL. . . . . . .  C ADDR   0040H   A   
+IE . . . . . . . .  D ADDR   00A8H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+PCON . . . . . . .  D ADDR   0087H   A   
+RECEIVE. . . . . .  C ADDR   003CH   A   
+RI . . . . . . . .  B ADDR   0098H.0 A   
+SBUF . . . . . . .  D ADDR   0099H   A   
+SCON . . . . . . .  D ADDR   0098H   A   
+START. . . . . . .  C ADDR   0026H   A   
+TH1. . . . . . . .  D ADDR   008DH   A   
+TL1. . . . . . . .  D ADDR   008BH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR1. . . . . . . .  B ADDR   0088H.6 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

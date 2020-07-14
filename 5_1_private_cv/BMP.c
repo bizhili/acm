@@ -9,7 +9,7 @@ typedef struct     //这个结构体就是对上面那个图做一个封装。
 {
     //bmp header
     u8  Signatue[2] ;   // B  M
-    u32 FileSize ;     //文件大小
+    u32 FileSize ;     //文件大小9
     u16 Reserv1 ;
     u16 Reserv2 ;
     u32 FileOffset ;   //文件头偏移量

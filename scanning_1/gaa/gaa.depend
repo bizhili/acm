@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1592208643 source:c:\users\qwe\desktop\gaa\gaa\gaa.c
+	"stdio.h"
+	"stdlib.h"
+
+1592545066 source:c:\users\qwe\desktop\acm\acm\scanning_1\gaa\gaa.c
+	"main.h"
+
+1592545244 c:\users\qwe\desktop\acm\acm\scanning_1\gaa\main.h
+	"stdio.h"
+	"stdlib.h"
+	"string.h"
+

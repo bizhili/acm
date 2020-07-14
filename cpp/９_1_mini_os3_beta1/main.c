@@ -6,7 +6,7 @@ struct init_pcb *pro1,*pro2,*pro3;
 void func1(void)
 {
 	int i = 1;
-	while (i<10) {
+	while (i<13) {
 		i++;
 		printf("thread 1 :%d\n",i);
 		os_delay_ms(10);
@@ -15,7 +15,7 @@ void func1(void)
 		printf("qiqi\n");
 		os_delay_ms(10);
 		printf("tata\n");
-		os_delay_ms(100);
+		os_delay_ms(10);
 		printf("gaag\n");
 	}
 	os_exe_end();
@@ -23,7 +23,7 @@ void func1(void)
 void func2(void)
 {
 	int i = 1;
-	while (i<9) {
+	while (i<23) {
 		i++;
 		printf("2thread 2 :%d\n", i);
 		os_delay_ms(10);
@@ -41,7 +41,7 @@ void func2(void)
 void func3(void)
 {
 	int i = 1;
-	while (i<10) {
+	while (i<23) {
 		i++;
 		printf("3thread 3 :%d\n", i);
 		os_delay_ms(10);
@@ -65,7 +65,7 @@ int main()
 	pro3=my_malloc(sizeof(struct init_pcb));
 	pro1->p=func1;
 	pro1->startTime=18;
-	pro1->time_priority=90;
+	pro1->time_priority=40;
 	pro1->stackSpace=8000;
 	pro2->p=func2;
 	pro2->startTime=13;

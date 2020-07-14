@@ -46,7 +46,7 @@ struct init_pcb{
     u32 time_priority;//ms
     void (*p)(void);//processing function
 };
-unsigned long PTR_MANGLE(unsigned long var)
+unsigned long PTR_MANGLE(unsigned long var)//init stack
 {
     asm (   "movq %1, %%rdx \n"
             "xor    %%fs:0x30, %%rdx\n"
@@ -57,7 +57,7 @@ unsigned long PTR_MANGLE(unsigned long var)
     return var;
 }
 
-unsigned long PTR_DEMANGLE(unsigned long var)
+unsigned long PTR_DEMANGLE(unsigned long var)//init stack
 {
     asm (   "ror $0x11, %0\n"
             "xor %%fs:0x30, %0"

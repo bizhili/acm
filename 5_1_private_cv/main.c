@@ -185,7 +185,7 @@ PIC *cv_findCountours(PIC *pic)
     for(u32 count=0;count<size;count++)
     {
         temp->r.element[count]=255;
-        temp->g.element[count]=255;
+        temp->g.element[count]=255;7
         temp->b.element[count]=255;
     }
     int ccur_d=0,ccur_c=0;
